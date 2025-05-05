@@ -20,8 +20,8 @@ public class Tarea1 {
         List<Integer> s1 = Arrays.asList(1, 2, 4, 10);
         List<Integer> s2 = Arrays.asList(2, 4, 5, 7);
 
-        System.out.println("esUnCamino(s1): " + grafo.esUnCamino(s1)); // true
-        System.out.println("esUnCamino(s2): " + grafo.esUnCamino(s2)); // false
+        System.out.println("esUnCamino(s1): " + grafo.esUnCamino(s1)); // V
+        System.out.println("esUnCamino(s2): " + grafo.esUnCamino(s2)); // F
     }
 }
 
