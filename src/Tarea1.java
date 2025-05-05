@@ -24,97 +24,100 @@ public class Tarea1 {
         System.out.println("esUnCamino(s2): " + grafo.esUnCamino(s2)); // false
     }
 }
-    //Primera Parte
-    class BitMap {
-        private int[] b;
-        private int size;
 
-        public BitMap(int size) {
-            this.size = size;
-            int ni = (int) Math.ceil(size / 32);
-            b = new int[ni];
+//Primera Parte
+class BitMap {
+    private int[] b;
+    private int size;
+
+    public BitMap(int size) {
+        this.size = size;
+        int ni = (int) Math.ceil(size / 32);
+        b = new int[ni];
+    }
+
+    public void On(int i) {
+        int index = i / 32;
+        int bit = i % 32;
+        b[index] |= (1 << bit);
+    }
+
+    public void Off(int i) {
+        int index = i / 32;
+        int bit = i % 32;
+        b[index] &= ~(1 << bit);
+    }
+
+    public byte Access(int i) {
+        int index = i / 32;
+        int bit = i % 32;
+        return (byte) ((b[index] >> bit) & 1);
+    }
+
+    public int Rank(int i) {
+        int total = 0;
+        for (int k = 0; k < i; k++) {
+            total += Access(k);
         }
+        return total;
+    }
 
-        public void On(int i) {
-            int index = i / 32;
-            int bit = i % 32;
-            b[index] |= (1 << bit);
-        }
-
-        public void Off(int i) {
-            int index = i / 32;
-            int bit = i % 32;
-            b[index] &= ~(1 << bit);
-        }
-
-        public byte Access(int i) {
-            int index = i / 32;
-            int bit = i % 32;
-            return (byte) ((b[index] >> bit) & 1);
-        }
-
-        public int Rank(int i) {
-            int total = 0;
-            for (int k = 0; k < i; k++) {
-                total += Access(k);
+    public int Select(int j) {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (Access(i) == 1) {
+                count++;
+                if (count == j) return i;
             }
-            return total;
+        }
+        return -1;
+    }
+}
+
+// Segunda Parte
+class GND {
+    private int n;
+    private BitMap[] matriz;
+
+    public GND(int n, List<int[]> arista) {
+        this.n = n;
+        matriz = new BitMap[n + 1];
+        for (int i = 1; i <= n; i++) {
+            matriz[i] = new BitMap(n + 1);
         }
 
-        public int Select(int j) {
-            int count = 0;
-            for (int i = 0; i < size; i++) {
-                if (Access(i) == 1) {
-                    count++;
-                    if (count == j) return i;
-                }
-            }
-            return -1;
+        for (int[] a : arista) {
+            int u = a[0], v = a[1];
+            matriz[u].On(v);
+            matriz[v].On(u);
         }
     }
-        // Segunda Parte
-        class GND {
-            private int n;
-            private BitMap[] matriz;
-            public GND (int n, List<int[]> arista){
-                this.n = n;
-                matriz = new BitMap[n + 1];
-                for (int i = 1; i <= n; i++) {
-                    matriz[i] = new BitMap(n + 1);
-                }
 
-                for (int[] a : arista) {
-                    int u = a[0], v = a[1];
-                    matriz[u].On(v);
-                    matriz[v].On(u);
-                }
-            }
-
-            public List<Integer> vecinos(int nodo) {
-                List<Integer> v = new ArrayList<>();
-                for (int i = 1; i <= n; i++) {
-                    if (matriz[nodo].Access(i) == 1) {
-                        v.add(i);
-                    }
-                }
-                return v;
-            }
-
-            public boolean esUnCamino(List<Integer> S) {
-                for (int i = 0; i < S.size() - 1; i++) {
-                    int u = S.get(i), v = S.get(i + 1);
-                    if (matriz[u].Access(v) == 0) return false;
-                }
-                return true;
-            }
-
-            public void mostrarGrafo() {
-                for (int i = 1; i <= n; i++) {
-                    System.out.print(i + " -> ");
-                    List<Integer> vecinos = vecinos(i);
-                    System.out.println(vecinos);
-                }
+    public List<Integer> vecinos(int nodo) {
+        List<Integer> v = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            if (matriz[nodo].Access(i) == 1) {
+                v.add(i);
             }
         }
+        return v;
+    }
+
+    public boolean esUnCamino(List<Integer> S) {
+        for (int i = 0; i < S.size() - 1; i++) {
+            int u = S.get(i), v = S.get(i + 1);
+            if (matriz[u].Access(v) == 0) return false;
+        }
+        return true;
+    }
+
+    public void mostrarGrafo() {
+        for (int i = 1; i <= n; i++) {
+            System.out.print(i + " -> ");
+            List<Integer> vecinos = vecinos(i);
+            System.out.println(vecinos);
+        }
+    }
+}
 
 
